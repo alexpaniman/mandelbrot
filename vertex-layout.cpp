@@ -1,6 +1,5 @@
 #include "vertex-layout.h"
 #include "GL/glew.h"
-#include "forward-vertex-layout.h"
 
 namespace gl {
 

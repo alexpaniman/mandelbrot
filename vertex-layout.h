@@ -1,6 +1,5 @@
 #pragma once
 
-#include "forward-vertex-layout.h"
 #include <vector>
 
 namespace gl {
