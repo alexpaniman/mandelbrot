@@ -9,8 +9,13 @@ set(CMAKE_CXX_LINKER_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D _DEBUG -no-pie -ggdb3 -s
 
 project(mandelbrot VERSION 1.0)
 
+add_executable(mandelbrot mandelbrot.cpp opengl-setup.cpp vertex-array.cpp vertex-buffer.cpp vertex-layout.cpp math.cpp opengl-error-handler.cpp)
 
-add_executable(mandelbrot mandelbrot.cpp opengl-setup.cpp vertex-array.cpp vertex-buffer.cpp vertex-layout.cpp math.cpp)
+add_custom_command(
+   TARGET mandelbrot PRE_BUILD
+   COMMAND m4 opengl-wrapper.h.m4 > opengl-wrapper.h
+   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
 
 target_include_directories(
     mandelbrot PUBLIC
