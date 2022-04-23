@@ -1,6 +1,8 @@
 #pragma once
 
 #include "opengl-error-handler.h"
+
+#include <iostream>
 #include <GL/glew.h>
 
 namespace gl::raw {
@@ -39,6 +41,14 @@ divert(0)dnl
     #define GL_CLEAR_ERROR() ((void) 0)
     #define GL_CHECK_ERROR() ((void) 0)
     #endif
+
+    #ifdef GL_LOG_CALLS
+    #define GL_LOG_CALL(name, args)       \
+            std::cout << " ==> " << name; \
+            std::cout << args << "\n";
+    #else
+    #define GL_LOG_CALL(name, args) ((void) 0)
+    #endif
 foreach(signature, SIGNATURES,
 `
 divert(-1)
@@ -50,9 +60,11 @@ divert(-1)
 # This implementation implies OpenGL naming style, look and
 # RETURNS_VOID description to get an idea about possible limitations.
 # ---------------------------------------------------------------
-define(FUNCTION_CALL,
+define(`FUNCTION_CALL',
     `patsubst(patsubst(signature, `^.*gl', `gl'),
-	      `\([(,] *\)[^(),]*[ *]\(\w+\)', `\1\2')')
+              `\([(,] *\)[^(),]*[ *]\(\w+\)', `\1\2')')
+
+define(`RETURN_TYPE', `patsubst(signature, `\(\w+ *\).*', `\1')')
 
 # ---------------------------------------------------------------
 # RETURNS_VOID = 0 if function returns something, 1 otherwise
@@ -69,18 +81,45 @@ define(FUNCTION_CALL,
 # Also, because of OpenGL using camel case for typenames, it
 # does not even consider underscores. Beware!
 # ---------------------------------------------------------------
-define(RETURNS_VOID,
+define(`RETURNS_VOID',
     `ifelse(patsubst(signature, `\(\w+\).*', `\1'), `void', `1', `0')')
 
+define(`FUNCTION_NAME', `patsubst(signature, `\w+ +\(\w+\)(.*)', `\1')') 
+define(`FUNCTION_NAME_SNAKE_CASED', `CAMEL_TO_SNAKE_CASE(FUNCTION_NAME)')
+
+# ---------------------------------------------------------------
+# FUNCTION_NAME = snake cased original name with "gl" prefix
+# stripped away from the name.
+# ---------------------------------------------------------------
+define(`NEW_FUNCTION_NAME', `patsubst(FUNCTION_NAME_SNAKE_CASED, `gl_', `')')
+
+define(`COMMA_SEPARATED_ARGS_IN_PARENS', `patsubst(FUNCTION_CALL, `.*?\((.*)\).*?', `\1')')
+
+define(`NO_ARGS', `ifelse(patsubst(FUNCTION_CALL, `.*().*', `NO ARGS'), `NO ARGS', `1', `0')')
+
+# ---------------------------------------------------------------
+# NAMED_ARGS = function args separated by << and with << "name = "
+# added before each one of them.
+#
+# Intended for use with std::cout-like string streams.
+# ---------------------------------------------------------------
+define(`NAMED_ARGS', "("
+               `patsubst(COMMA_SEPARATED_ARGS_IN_PARENS,
+                       `(?\(\w+?\)\([,)]\)', `" \1 = " << \1
+            <<')' " )")
+
+define(`NO_RETURN_TYPE_SIGNATURE', `patsubst(signature, `^.*(', `(')');
 
 divert(0)dnl
-    inline patsubst(signature, `\(\w+ *\).*', `\1')`'dnl
-patsubst(CAMEL_TO_SNAKE_CASE(patsubst(signature, `\w+ +\(\w+\)(.*)', `\1')), `gl_', `')`'dnl
-patsubst(signature, `^.*(', `(') {
+    inline RETURN_TYPE`'NEW_FUNCTION_NAME`'NO_RETURN_TYPE_SIGNATURE {
+        ifelse(NO_ARGS, `1',
+        `GL_LOG_CALL("FUNCTION_NAME", "()");',
+        `GL_LOG_CALL("FUNCTION_NAME", NAMED_ARGS);')
+
         GL_CLEAR_ERROR();
-        ifelse(RETURNS_VOID, `1', `', `auto result = ')dnl
-FUNCTION_CALL;
-        GL_CHECK_ERROR();ifelse(RETURNS_VOID, `1', `', `
+        ifelse(RETURNS_VOID, `1', `', `auto result = ')FUNCTION_CALL;
+        GL_CHECK_ERROR();dnl
+        ifelse(RETURNS_VOID, `1', `', `
 
         return result;')
     }
