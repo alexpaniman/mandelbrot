@@ -1,7 +1,8 @@
 #include "opengl-setup.h"
 #include "math.h"
 #include "vertex-array.h"
-#include <GLFW/glfw3.h>
+
+#include "opengl-wrapper.h"
 
 #include <fstream>
 #include <initializer_list>
@@ -29,24 +30,24 @@ namespace gl {
         unsigned int id = glCreateShader((unsigned int) type);
 
         const char* src = shader_to_compile.source_code.c_str();
-        glShaderSource(id, 1, &src, nullptr);
-        glCompileShader(id);
+        gl::raw::shader_source(id, 1, &src, nullptr);
+        gl::raw::compile_shader(id);
 
         int result;
-        glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+        gl::raw::get_shaderiv(id, GL_COMPILE_STATUS, &result);
 
         if (result == GL_FALSE) {
             int length = 0;
-            glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+            gl::raw::get_shaderiv(id, GL_INFO_LOG_LENGTH, &length);
 
             assert(length > 0 && "Length should be > 0");
 
             char* message = new char[(unsigned int) length];
-            glGetShaderInfoLog(id, length, &length, message);
+            gl::raw::get_shader_info_log(id, length, &length, message);
 
             std::string error_message = "Failed to compile shader!\n";
-            error_message += "==>    type: " + shader_to_compile.type;
-            error_message += "==> message: " + std::string(message);
+            error_message += "==>    type: " + shader_to_compile.type + "\n";
+            error_message += "==> message: \n" + std::string(message);
 
             // Because /message/ was already copied to /error_message/
             delete[] message;
@@ -107,13 +108,13 @@ namespace gl {
 
     void shaders::shader_program::from_shaders(const std::vector<shaders::compiled_shader> raw_shaders) {
         for (auto shader: raw_shaders)
-            glAttachShader(id, shader.id);
+            gl::raw::attach_shader(id, shader.id);
 
-        glLinkProgram(id);
-        glValidateProgram(id);
+        gl::raw::link_program(id);
+        gl::raw::validate_program(id);
 
-        for (auto shader: raw_shaders)
-            glDeleteProgram(shader.id);
+        // for (auto shader: raw_shaders)
+        //     gl::raw::delete_program(shader.id);
     };
 
     void shaders::shader_program::from_shaders(const std::vector<shaders::raw_shader> raw_shaders) {
@@ -128,12 +129,16 @@ namespace gl {
         return from_shaders(shaders::extract_shaders(filename));
     }
 
-    void shaders::shader_program::bind() {
-        glUseProgram(id);
+    unsigned int shaders::shader_program::get_id() const {
+        return id;
+    }
+
+    void shaders::shader_program::bind() const {
+        gl::raw::use_program(id);
     }
 
     shaders::shader_program::~shader_program() {
-        glDeleteProgram(id);
+        gl::raw::delete_program(id);
     }
 
     // ---------------------------------- GLFW WINDOW ----------------------------------
@@ -176,7 +181,7 @@ namespace gl {
 
         double last_time = glfwGetTime();
         while (!glfwWindowShouldClose(glfw_window)) {
-            glClear(GL_COLOR_BUFFER_BIT);
+            gl::raw::clear(GL_COLOR_BUFFER_BIT);
 
             draw();
 
@@ -200,7 +205,7 @@ namespace gl {
 
     static unsigned int generate_buffer() {
         unsigned int generated_buffer_id = 0;
-        glGenBuffers(1 /* single buffer */, &generated_buffer_id);
+        gl::raw::gen_buffers(1 /* single buffer */, &generated_buffer_id);
 
         return generated_buffer_id;
     }
@@ -208,7 +213,7 @@ namespace gl {
     points_buffer::points_buffer(): id(generate_buffer()) {}
 
     void points_buffer::bind() {
-        glBindBuffer(GL_ARRAY_BUFFER, id);
+        gl::raw::bind_buffer(GL_ARRAY_BUFFER, id);
     }
 
     void points_buffer::assign(const std::initializer_list<math::vec<double, 2>> points_initializer) {
@@ -218,8 +223,8 @@ namespace gl {
 
     void points_buffer::upload_data() {
         bind();
-        glBufferData(GL_ARRAY_BUFFER, points.size() * 2 * sizeof(double),
-                     &(*points.begin()), GL_STATIC_DRAW);
+        gl::raw::buffer_data(GL_ARRAY_BUFFER, (int) points.size() * 2 * (int) sizeof(double),
+                             &(*points.begin()), GL_STATIC_DRAW);
 
         const unsigned int vec2_attrib_index = 0;
 
@@ -238,8 +243,8 @@ namespace gl {
 
     // ------------------------------------ DRAWING ------------------------------------
 
-    void draw_buffer(const drawing_type type, const vertex_array& buffer_to_draw) {
-        buffer_to_draw.bind();
-        glDrawArrays((unsigned int) type, 0, (int) 2);
+    void draw(drawing_type type, const vertex_array& array, const shaders::shader_program& shaders) {
+        array.bind(); shaders.bind();
+        gl::raw::draw_arrays((unsigned int) type, 0, (int) array.get_element_count());
     }
 }

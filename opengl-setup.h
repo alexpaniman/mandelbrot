@@ -46,7 +46,8 @@ namespace gl::shaders {
         shader_program();
         shader_program(std::string filename);
 
-        void bind();
+        void bind() const;
+        unsigned int get_id() const;
 
         void from_shaders(std::vector<compiled_shader> shaders);
         void from_shaders(std::vector<raw_shader>      shaders);
@@ -120,5 +121,6 @@ namespace gl {
         PATCHES                  = GL_PATCHES
     };
 
-    void draw_buffer(drawing_type type, const vertex_array& buffer_to_draw);
+    void draw(drawing_type type, const vertex_array& array,
+              const shaders::shader_program& shaders);
 }

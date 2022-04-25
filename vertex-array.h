@@ -13,21 +13,40 @@ namespace gl {
     class vertex_array final {
     private:
         unsigned int id;
+        size_t element_count;
 
         vertex_buffer buffer;
         vertex_layout layout;
 
     public:
         vertex_array();
-        vertex_array(size_t size);
-        vertex_array(vertex_buffer buffer_initializer, vertex_layout layout_initalizer);
 
-        void assign_layout(vertex_layout layout_initializer);
-        void assign_buffer(vertex_buffer buffer_initializer);
-        void assign(vertex_buffer buffer_initializer, vertex_layout layout_initializer);
-        void assing();
+        vertex_array(vertex_layout new_layout);
+        vertex_array(vertex_layout new_layout, raw_data new_data);
+
+        template <typename value_type>
+        void assign(vertex_layout new_layout, std::vector<value_type> data_buffer) {
+            this->element_count = data_buffer.size();
+
+            size_t layout_size = 0;
+            for (vertex current: new_layout.vertices)
+                layout_size += current.size;
+
+            assign(new_layout, {
+                    (void*) &(*data_buffer.begin()),
+                    layout_size * data_buffer.size()
+            });
+        }
+
+        template <typename value_type>
+        vertex_array(vertex_layout new_layout, std::vector<value_type> new_buffer)
+            : vertex_array(new_layout) { assign(new_buffer); }
+
+        void assign(raw_data new_buffer);
+        void assign(vertex_layout new_layout, raw_data new_data);
 
         size_t size() const;
+        size_t get_element_count() const;
 
         void bind() const;
 

@@ -16,11 +16,14 @@ namespace gl {
 
     public:
         vertex_buffer();
+        vertex_buffer(raw_data new_data);
 
-        explicit vertex_buffer(raw_data data);
+        vertex_buffer(const vertex_buffer&) = delete;
+        vertex_buffer& operator=(const vertex_buffer&) = delete;
+
         ~vertex_buffer();
 
-        void set_data(raw_data data);
+        void set_data(raw_data new_data);
         void bind() const;
 
         size_t size() const;

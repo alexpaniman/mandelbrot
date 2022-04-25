@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <cassert>
+
+#include "vertex-layout.h"
 
 namespace math {
 
@@ -47,4 +50,15 @@ namespace math {
     using dvec2 = vec<double, 2>;
     using dvec3 = vec<double, 3>;
     using dvec4 = vec<double, 4>;
+
+    template <typename element_type, size_t count>
+    static gl::vertex_layout vector_layout(size_t number_of_vectors = 1) {
+        assert(number_of_vectors > 0);
+
+        gl::vertex_layout layout = gl::vertex::of_type<element_type>(count);
+        for (size_t i = 0; i < number_of_vectors - 1; ++ i)
+            layout = layout + gl::vertex::of_type<element_type>(count);
+
+        return layout;
+    }
 }
