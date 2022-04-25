@@ -36,7 +36,7 @@ namespace gl {
             update();
         }
 
-        constexpr auto operator[](const size_t index) {
+        constexpr auto& operator[](const size_t index) {
             return elements[index];
         }
 
