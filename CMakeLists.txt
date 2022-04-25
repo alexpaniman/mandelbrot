@@ -9,7 +9,7 @@ set(CMAKE_CXX_LINKER_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D _DEBUG -no-pie -ggdb3 -s
 
 project(mandelbrot VERSION 1.0)
 
-add_compile_definitions(GL_LOG_CALLS)
+# add_compile_definitions(GL_LOG_CALLS)
 
 add_executable(mandelbrot mandelbrot.cpp opengl-setup.cpp vertex-array.cpp vertex-buffer.cpp vertex-layout.cpp math.cpp opengl-error-handler.cpp)
 

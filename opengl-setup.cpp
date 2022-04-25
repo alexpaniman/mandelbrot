@@ -3,6 +3,7 @@
 #include "vertex-array.h"
 
 #include "opengl-wrapper.h"
+#include "vertex-vector-array.h"
 
 #include <fstream>
 #include <initializer_list>
@@ -143,8 +144,8 @@ namespace gl {
 
     // ---------------------------------- GLFW WINDOW ----------------------------------
 
-    window::window(const int width, const int height, const char* title):
-            width(width), height(height) {
+    window::window(const int width, const int height, const char* title)
+        : current_fps(0), width(width), height(height) {
 
         if (!glfwInit())
             throw std::runtime_error("Failed to initialize glfw!");
@@ -179,6 +180,8 @@ namespace gl {
     void window::draw_loop() {
         setup();
 
+        static int fps_counter = 0;
+
         double last_time = glfwGetTime();
         while (!glfwWindowShouldClose(glfw_window)) {
             gl::raw::clear(GL_COLOR_BUFFER_BIT);
@@ -189,10 +192,12 @@ namespace gl {
             glfwPollEvents();
 
             double current_time = glfwGetTime();
-            current_fps ++;
+            fps_counter ++;
             if (current_time - last_time >= 1.0) {
-                current_fps = 0;
-                last_time += 1.0;
+                current_fps = fps_counter;
+
+                fps_counter = 0;
+                last_time = current_time;
             }
         }
     }

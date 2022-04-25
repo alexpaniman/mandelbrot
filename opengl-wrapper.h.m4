@@ -10,6 +10,10 @@ include(stdlib.m4)dnl
 divert(-1)
 
 define(`SIGNATURES', `(
+void glBegin(GLenum mode),
+void glEnd(),
+void glVertex2f(GLfloat x, GLfloat y),
+void glColor3f(GLfloat red, GLfloat green, GLfloat blue),
 GLuint glCreateProgram(),
 GLuint glCreateShader(GLenum shaderType),
 void glAttachShader(GLuint program, GLuint shader),

@@ -11,6 +11,7 @@
 
 #include "math.h"
 #include "vertex-array.h"
+#include "vertex-vector-array.h"
 
 namespace gl::shaders {
     enum class shader_type {
@@ -79,7 +80,7 @@ namespace gl {
         int get_fps() const noexcept;
         void draw_loop();
 
-        virtual void setup() = 0;
+        virtual void setup() {};
         virtual void draw()  = 0;
 
         virtual ~window();
@@ -123,4 +124,11 @@ namespace gl {
 
     void draw(drawing_type type, const vertex_array& array,
               const shaders::shader_program& shaders);
+
+    template <typename value_type>
+    void draw(drawing_type type, const vertex_vector_array<value_type>& array,
+              const shaders::shader_program& shaders) {
+
+        draw(type, array.get_vertex_array(), shaders);
+    }
 }

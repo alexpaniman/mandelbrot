@@ -23,6 +23,47 @@ namespace gl::raw {
     #define GL_LOG_CALL(name, args) ((void) 0)
     #endif
 
+    inline void begin(GLenum mode) {
+        GL_LOG_CALL("glBegin", "("
+               " mode = " << mode
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glBegin(mode);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void end() {
+        GL_LOG_CALL("glEnd", "()");
+
+        GL_CLEAR_ERROR();
+        glEnd();
+        GL_CHECK_ERROR();        
+    }
+
+    inline void vertex2f(GLfloat x, GLfloat y) {
+        GL_LOG_CALL("glVertex2f", "("
+               " x = " << x
+            << " y = " << y
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glVertex2f(x, y);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void color3f(GLfloat red, GLfloat green, GLfloat blue) {
+        GL_LOG_CALL("glColor3f", "("
+               " red = " << red
+            << " green = " << green
+            << " blue = " << blue
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glColor3f(red, green, blue);
+        GL_CHECK_ERROR();        
+    }
+
     inline GLuint create_program() {
         GL_LOG_CALL("glCreateProgram", "()");
 

@@ -14,6 +14,10 @@ namespace gl {
         gl::raw::gen_vertex_arrays(1, &this->id);
     }
 
+    void vertex_array::set_layout(vertex_layout new_layout) {
+        this->layout = new_layout;
+    }
+
     vertex_array::vertex_array(vertex_layout new_layout, raw_data new_data)
         : vertex_array(new_layout) { assign(new_data); }
 
@@ -38,7 +42,7 @@ namespace gl {
                                            (int) total_size,
                                            (const void*)(uintptr_t) offset);
 
-            offset += layout_element.count * layout_element.size;
+            offset += layout_element.size;
         }
     }
 
