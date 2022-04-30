@@ -13,12 +13,12 @@
 
 class mandelbrot_window: public gl::window {
 private:
-    struct colored_point final {
+    struct colored_vertex {
         math::vec<float, 2> point;
         math::vec<float, 3> color;
     };
 
-    gl::vertex_vector_array<colored_point> points;
+    gl::vertex_vector_array<colored_vertex> points;
     gl::shaders::shader_program colored_renderer;
 
 public:
@@ -29,13 +29,13 @@ public:
                           math::vector_layout<float, 3>());
 
         points.assign_and_update({
-                { { -1.0f, -1.0f }, { 1.0, 0.0, 0.0 } },
-                { {  1.0f, -1.0f }, { 0.0, 0.0, 1.0 } },
-                { { -1.0f,  1.0f }, { 0.0, 1.0, 0.0 } },
-                { {  1.0f,  1.0f }, { 0.0, 0.0, 1.0 } },
+                {{ -1.0f, -1.0f }, { 1.0, 0.0, 0.0 }},
+                {{  1.0f, -1.0f }, { 0.0, 1.0, 0.0 }},
+                {{ -1.0f,  1.0f }, { 0.0, 0.0, 1.0 }},
+                {{  1.0f,  1.0f }, { 1.0, 1.0, 0.0 }}
         });
 
-        colored_renderer.from_file("res/mandelbrot.shader");
+        colored_renderer.from_file("res/gradient.glsl");
     }
 
     void draw() override {

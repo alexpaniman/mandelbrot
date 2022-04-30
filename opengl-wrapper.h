@@ -23,52 +23,24 @@ namespace gl::raw {
     #define GL_LOG_CALL(name, args) ((void) 0)
     #endif
 
-    inline void begin(GLenum mode) {
-        GL_LOG_CALL("glBegin", "("
-               " mode = " << mode
-            << " )");
-
-        GL_CLEAR_ERROR();
-        glBegin(mode);
-        GL_CHECK_ERROR();        
-    }
-
-    inline void end() {
-        GL_LOG_CALL("glEnd", "()");
-
-        GL_CLEAR_ERROR();
-        glEnd();
-        GL_CHECK_ERROR();        
-    }
-
-    inline void vertex2f(GLfloat x, GLfloat y) {
-        GL_LOG_CALL("glVertex2f", "("
-               " x = " << x
-            << " y = " << y
-            << " )");
-
-        GL_CLEAR_ERROR();
-        glVertex2f(x, y);
-        GL_CHECK_ERROR();        
-    }
-
-    inline void color3f(GLfloat red, GLfloat green, GLfloat blue) {
-        GL_LOG_CALL("glColor3f", "("
-               " red = " << red
-            << " green = " << green
-            << " blue = " << blue
-            << " )");
-
-        GL_CLEAR_ERROR();
-        glColor3f(red, green, blue);
-        GL_CHECK_ERROR();        
-    }
-
     inline GLuint create_program() {
         GL_LOG_CALL("glCreateProgram", "()");
 
         GL_CLEAR_ERROR();
         auto result = glCreateProgram();
+        GL_CHECK_ERROR();        
+
+        return result;
+    }
+
+    inline GLint get_uniform_location(GLuint program, const GLchar *name) {
+        GL_LOG_CALL("glGetUniformLocation", "("
+               " program = " << program
+            << " name = " << name
+            << " )");
+
+        GL_CLEAR_ERROR();
+        auto result = glGetUniformLocation(program, name);
         GL_CHECK_ERROR();        
 
         return result;
@@ -97,6 +69,16 @@ namespace gl::raw {
         GL_CHECK_ERROR();        
     }
 
+    inline void begin(GLenum mode) {
+        GL_LOG_CALL("glBegin", "("
+               " mode = " << mode
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glBegin(mode);
+        GL_CHECK_ERROR();        
+    }
+
     inline void bind_buffer(GLenum target, GLuint buffer) {
         GL_LOG_CALL("glBindBuffer", "("
                " target = " << target
@@ -118,7 +100,7 @@ namespace gl::raw {
         GL_CHECK_ERROR();        
     }
 
-    inline void buffer_data(GLenum target, GLsizeiptr size, const GLvoid * data, GLenum usage) {
+    inline void buffer_data(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage) {
         GL_LOG_CALL("glBufferData", "("
                " target = " << target
             << " size = " << size
@@ -141,6 +123,18 @@ namespace gl::raw {
         GL_CHECK_ERROR();        
     }
 
+    inline void color3f(GLfloat red, GLfloat green, GLfloat blue) {
+        GL_LOG_CALL("glColor3f", "("
+               " red = " << red
+            << " green = " << green
+            << " blue = " << blue
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glColor3f(red, green, blue);
+        GL_CHECK_ERROR();        
+    }
+
     inline void compile_shader(GLuint shader) {
         GL_LOG_CALL("glCompileShader", "("
                " shader = " << shader
@@ -151,7 +145,7 @@ namespace gl::raw {
         GL_CHECK_ERROR();        
     }
 
-    inline void delete_buffers(GLsizei n, const GLuint * buffers) {
+    inline void delete_buffers(GLsizei n, const GLuint *buffers) {
         GL_LOG_CALL("glDeleteBuffers", "("
                " n = " << n
             << " buffers = " << buffers
@@ -194,7 +188,15 @@ namespace gl::raw {
         GL_CHECK_ERROR();        
     }
 
-    inline void gen_buffers(GLsizei n, GLuint * buffers) {
+    inline void end() {
+        GL_LOG_CALL("glEnd", "()");
+
+        GL_CLEAR_ERROR();
+        glEnd();
+        GL_CHECK_ERROR();        
+    }
+
+    inline void gen_buffers(GLsizei n, GLuint *buffers) {
         GL_LOG_CALL("glGenBuffers", "("
                " n = " << n
             << " buffers = " << buffers
@@ -264,6 +266,515 @@ namespace gl::raw {
         GL_CHECK_ERROR();        
     }
 
+    inline void uniform1f(GLint location, GLfloat v0) {
+        GL_LOG_CALL("glUniform1f", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform1f(location, v0);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform1fv(GLint location, GLsizei count, const GLfloat *value) {
+        GL_LOG_CALL("glUniform1fv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform1fv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform1d(GLint location, GLdouble v0) {
+        GL_LOG_CALL("glUniform1d", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform1d(location, v0);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform1dv(GLint location, GLsizei count, const GLdouble *value) {
+        GL_LOG_CALL("glUniform1dv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform1dv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform1i(GLint location, GLint v0) {
+        GL_LOG_CALL("glUniform1i", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform1i(location, v0);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform1iv(GLint location, GLsizei count, const GLint *value) {
+        GL_LOG_CALL("glUniform1iv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform1iv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform1ui(GLint location, GLuint v0) {
+        GL_LOG_CALL("glUniform1ui", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform1ui(location, v0);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform1uiv(GLint location, GLsizei count, const GLuint *value) {
+        GL_LOG_CALL("glUniform1uiv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform1uiv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform2f(GLint location, GLfloat v0, GLfloat v1) {
+        GL_LOG_CALL("glUniform2f", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform2f(location, v0, v1);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform2fv(GLint location, GLsizei count, const GLfloat *value) {
+        GL_LOG_CALL("glUniform2fv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform2fv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform2d(GLint location, GLdouble v0, GLdouble v1) {
+        GL_LOG_CALL("glUniform2d", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform2d(location, v0, v1);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform2dv(GLint location, GLsizei count, const GLdouble *value) {
+        GL_LOG_CALL("glUniform2dv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform2dv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform2i(GLint location, GLint v0, GLint v1) {
+        GL_LOG_CALL("glUniform2i", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform2i(location, v0, v1);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform2iv(GLint location, GLsizei count, const GLint *value) {
+        GL_LOG_CALL("glUniform2iv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform2iv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform2ui(GLint location, GLuint v0, GLuint v1) {
+        GL_LOG_CALL("glUniform2ui", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform2ui(location, v0, v1);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform2uiv(GLint location, GLsizei count, const GLuint *value) {
+        GL_LOG_CALL("glUniform2uiv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform2uiv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) {
+        GL_LOG_CALL("glUniform3f", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " v2 = " << v2
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform3f(location, v0, v1, v2);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform3fv(GLint location, GLsizei count, const GLfloat *value) {
+        GL_LOG_CALL("glUniform3fv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform3fv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform3d(GLint location, GLdouble v0, GLdouble v1, GLdouble v2) {
+        GL_LOG_CALL("glUniform3d", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " v2 = " << v2
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform3d(location, v0, v1, v2);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform3dv(GLint location, GLsizei count, const GLdouble *value) {
+        GL_LOG_CALL("glUniform3dv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform3dv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform3i(GLint location, GLint v0, GLint v1, GLint v2) {
+        GL_LOG_CALL("glUniform3i", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " v2 = " << v2
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform3i(location, v0, v1, v2);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform3iv(GLint location, GLsizei count, const GLint *value) {
+        GL_LOG_CALL("glUniform3iv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform3iv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform3ui(GLint location, GLuint v0, GLuint v1, GLuint v2) {
+        GL_LOG_CALL("glUniform3ui", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " v2 = " << v2
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform3ui(location, v0, v1, v2);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform3uiv(GLint location, GLsizei count, const GLuint *value) {
+        GL_LOG_CALL("glUniform3uiv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform3uiv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) {
+        GL_LOG_CALL("glUniform4f", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " v2 = " << v2
+            << " v3 = " << v3
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform4f(location, v0, v1, v2, v3);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform4fv(GLint location, GLsizei count, const GLfloat *value) {
+        GL_LOG_CALL("glUniform4fv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform4fv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform4d(GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3) {
+        GL_LOG_CALL("glUniform4d", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " v2 = " << v2
+            << " v3 = " << v3
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform4d(location, v0, v1, v2, v3);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform4dv(GLint location, GLsizei count, const GLdouble *value) {
+        GL_LOG_CALL("glUniform4dv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform4dv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) {
+        GL_LOG_CALL("glUniform4i", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " v2 = " << v2
+            << " v3 = " << v3
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform4i(location, v0, v1, v2, v3);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform4iv(GLint location, GLsizei count, const GLint *value) {
+        GL_LOG_CALL("glUniform4iv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform4iv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform4ui(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3) {
+        GL_LOG_CALL("glUniform4ui", "("
+               " location = " << location
+            << " v0 = " << v0
+            << " v1 = " << v1
+            << " v2 = " << v2
+            << " v3 = " << v3
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform4ui(location, v0, v1, v2, v3);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform4uiv(GLint location, GLsizei count, const GLuint *value) {
+        GL_LOG_CALL("glUniform4uiv", "("
+               " location = " << location
+            << " count = " << count
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniform4uiv(location, count, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform_matrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) {
+        GL_LOG_CALL("glUniformMatrix2fv", "("
+               " location = " << location
+            << " count = " << count
+            << " transpose = " << transpose
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniformMatrix2fv(location, count, transpose, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform_matrix2x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) {
+        GL_LOG_CALL("glUniformMatrix2x3fv", "("
+               " location = " << location
+            << " count = " << count
+            << " transpose = " << transpose
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniformMatrix2x3fv(location, count, transpose, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform_matrix2x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) {
+        GL_LOG_CALL("glUniformMatrix2x4fv", "("
+               " location = " << location
+            << " count = " << count
+            << " transpose = " << transpose
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniformMatrix2x4fv(location, count, transpose, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform_matrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) {
+        GL_LOG_CALL("glUniformMatrix3fv", "("
+               " location = " << location
+            << " count = " << count
+            << " transpose = " << transpose
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniformMatrix3fv(location, count, transpose, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform_matrix3x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) {
+        GL_LOG_CALL("glUniformMatrix3x2fv", "("
+               " location = " << location
+            << " count = " << count
+            << " transpose = " << transpose
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniformMatrix3x2fv(location, count, transpose, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform_matrix3x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) {
+        GL_LOG_CALL("glUniformMatrix3x4fv", "("
+               " location = " << location
+            << " count = " << count
+            << " transpose = " << transpose
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniformMatrix3x4fv(location, count, transpose, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform_matrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) {
+        GL_LOG_CALL("glUniformMatrix4fv", "("
+               " location = " << location
+            << " count = " << count
+            << " transpose = " << transpose
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniformMatrix4fv(location, count, transpose, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform_matrix4x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) {
+        GL_LOG_CALL("glUniformMatrix4x2fv", "("
+               " location = " << location
+            << " count = " << count
+            << " transpose = " << transpose
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniformMatrix4x2fv(location, count, transpose, value);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void uniform_matrix4x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) {
+        GL_LOG_CALL("glUniformMatrix4x3fv", "("
+               " location = " << location
+            << " count = " << count
+            << " transpose = " << transpose
+            << " value = " << value
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glUniformMatrix4x3fv(location, count, transpose, value);
+        GL_CHECK_ERROR();        
+    }
+
     inline void use_program(GLuint program) {
         GL_LOG_CALL("glUseProgram", "("
                " program = " << program
@@ -281,6 +792,17 @@ namespace gl::raw {
 
         GL_CLEAR_ERROR();
         glValidateProgram(program);
+        GL_CHECK_ERROR();        
+    }
+
+    inline void vertex2f(GLfloat x, GLfloat y) {
+        GL_LOG_CALL("glVertex2f", "("
+               " x = " << x
+            << " y = " << y
+            << " )");
+
+        GL_CLEAR_ERROR();
+        glVertex2f(x, y);
         GL_CHECK_ERROR();        
     }
 

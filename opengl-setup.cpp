@@ -1,5 +1,6 @@
 #include "opengl-setup.h"
 #include "math.h"
+#include "uniforms.h"
 #include "vertex-array.h"
 
 #include "opengl-wrapper.h"
@@ -141,6 +142,46 @@ namespace gl {
     shaders::shader_program::~shader_program() {
         gl::raw::delete_program(id);
     }
+
+    int shaders::shader_program::get_uniform_location_cached(std::string name) const {
+        int location = 0;
+        if (this->uniform_locations.contains(name))
+            location = uniform_locations[name];
+        else {
+            location = gl::uniform::get_uniform_location(*this, name);
+            if (location == -1)
+                throw std::runtime_error("uniform is unused in shader: '" + name + "'");
+
+            uniform_locations[name] = location;
+        }
+
+        return location;
+    }
+
+    #define DEFINE_UNIFORM_SETTER(type, prefix, setter)                                                      \
+        template <>                                                                                          \
+        void shaders::shader_program::uniform(std::string name, type value) const {                          \
+            bind();                                                                                          \
+            gl::raw::uniform##prefix(get_uniform_location_cached(name), setter);                             \
+        }
+
+    DEFINE_UNIFORM_SETTER(int   , 1i, value)
+    DEFINE_UNIFORM_SETTER(double, 1d, value)
+    DEFINE_UNIFORM_SETTER(float , 1f, value)
+
+    #define _ ,
+    #define DEFINE_VECTOR_UNIFORM_SETTERS(type, prefix)                                                      \
+        DEFINE_UNIFORM_SETTER(math::vec<type _ 4>, 4##prefix, value.x() _ value.y() _ value.z() _ value.w()) \
+        DEFINE_UNIFORM_SETTER(math::vec<type _ 3>, 3##prefix, value.x() _ value.y() _ value.z())             \
+        DEFINE_UNIFORM_SETTER(math::vec<type _ 2>, 2##prefix, value.x() _ value.y())                         \
+
+    DEFINE_VECTOR_UNIFORM_SETTERS(int   , i)
+    DEFINE_VECTOR_UNIFORM_SETTERS(double, d)
+    DEFINE_VECTOR_UNIFORM_SETTERS(float , f)
+
+    #undef _
+    #undef DEFINE_UNIFORM_SETTER
+    #undef DEFINE_VECTOR_UNIFORM_SETTERS
 
     // ---------------------------------- GLFW WINDOW ----------------------------------
 

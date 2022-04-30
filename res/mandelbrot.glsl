@@ -34,15 +34,16 @@ vec3 fractal(vec2 p) {
     return vec3(0);
 }
 
+uniform vec2 resolution;
+
 #define AA 3
 
 void main() {
-    vec2 iResolution = vec2(1920, 1080);
-    vec2 c = (gl_FragCoord.xy / iResolution.xy * 2. - 1.) * vec2(iResolution.x / iResolution.y, 1) * ZOOM - vec2(.5,0.);
+    vec2 c = (gl_FragCoord.xy / resolution.xy * 2. - 1.) * vec2(resolution.x / resolution.y, 1) * ZOOM - vec2(.5,0.);
 
     vec3 col = vec3(0);
 
-    float e = 1. / min(iResolution.y , iResolution.x);    
+    float e = 1. / min(resolution.y , resolution.x);    
     for (float i = -AA; i < AA; ++i) {
         for (float j = -AA; j < AA; ++j) {
     		col += fractal(c + ZOOM * vec2(i, j) * (e/AA)) / (4.*AA*AA);
