@@ -36,6 +36,10 @@ namespace gl {
             update();
         }
 
+        void resize(size_t new_size, const value_type& value = value_type()) {
+            elements.resize(new_size, value);
+        }
+
         constexpr auto& operator[](const size_t index) {
             return elements[index];
         }
