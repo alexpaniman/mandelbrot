@@ -236,6 +236,7 @@ namespace gl {
             fps_counter ++;
             if (current_time - last_time >= 1.0) {
                 current_fps = fps_counter;
+                on_fps_updated();
 
                 fps_counter = 0;
                 last_time = current_time;

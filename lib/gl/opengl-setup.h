@@ -91,6 +91,8 @@ namespace gl {
         virtual void setup() {};
         virtual void draw()  = 0;
 
+        virtual void on_fps_updated() {};
+
         enum class key {
             KEY_SPACE = GLFW_KEY_SPACE,
             KEY_APOSTROPHE = GLFW_KEY_APOSTROPHE,
