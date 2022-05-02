@@ -101,6 +101,8 @@ namespace math {
             return accumulator;
         }
 
+        constexpr element_type len() { return this->dot(*this); }
+
 
         template <typename value_type, size_t element_count>
         friend std::ostream& operator<<(std::ostream& os, math::vec<value_type, element_count> vector);
@@ -140,5 +142,15 @@ namespace math {
     template<class... vector_coordinates>
     vec(vector_coordinates... initializer_coordinates) ->
         vec<typename std::tuple_element<0, std::tuple<vector_coordinates...>>::type, sizeof...(vector_coordinates)>;
+
+    template <typename type>
+    constexpr type pow(type value, int power) {
+        if (power == 1)
+            return value;
+
+        return power % 2 == 0?
+              pow(value * value, power / 2)
+            : value * pow(value, power - 1);
+    }
 
 }
