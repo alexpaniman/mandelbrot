@@ -6,6 +6,7 @@
 #include "opengl-wrapper.h"
 #include "vertex-vector-array.h"
 
+#include <GLFW/glfw3.h>
 #include <fstream>
 #include <initializer_list>
 #include <limits>
@@ -185,6 +186,9 @@ namespace gl {
 
     // ---------------------------------- GLFW WINDOW ----------------------------------
 
+    // GLFWwindow <=> gl::window mapping for deducing gl::window in key callback
+    static std::map<GLFWwindow*, gl::window*> window_mapping {};
+
     window::window(const int width, const int height, const char* title)
         : current_fps(0), width(width), height(height) {
 
@@ -203,6 +207,8 @@ namespace gl {
                                      std::string(error_message));
         }
 
+        window_mapping[glfw_window] = this;
+
         bind();
 
         if (glewInit() != GLEW_OK)
@@ -218,8 +224,15 @@ namespace gl {
         return current_fps;
     }
 
+    static void key_press_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+            window_mapping[window]->on_key_pressed((gl::window::key) key);
+    }
+
     void window::draw_loop() {
         setup();
+
+        glfwSetKeyCallback(this->glfw_window, &key_press_callback);
 
         static int fps_counter = 0;
 
