@@ -215,7 +215,7 @@ namespace gl {
             throw std::runtime_error("Failed to initialize glew!");
     }
     
-    void window::bind() {
+    void window::bind() const {
         glfwMakeContextCurrent(glfw_window);
     }
 
@@ -226,7 +226,7 @@ namespace gl {
 
     static void key_press_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS || action == GLFW_REPEAT)
-            window_mapping[window]->on_key_pressed((gl::window::key) key);
+            window_mapping[window]->on_key_pressed((gl::key) key);
     }
 
     void window::draw_loop() {

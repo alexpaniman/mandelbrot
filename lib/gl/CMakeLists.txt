@@ -1,6 +1,7 @@
 add_library(gl STATIC
-  opengl-setup.cpp vertex-array.cpp vertex-buffer.cpp
-  vertex-layout.cpp opengl-error-handler.cpp uniforms.cpp)
+    opengl-setup.cpp vertex-array.cpp vertex-buffer.cpp
+    vertex-layout.cpp opengl-error-handler.cpp uniforms.cpp
+    renderer-handler-window.cpp renderer.cpp)
 
 target_include_directories(gl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

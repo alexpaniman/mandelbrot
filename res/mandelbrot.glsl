@@ -1,5 +1,5 @@
 #shader vertex   ------------------------------------------------------------------------------------------
-#version 330 core
+#version 440 core
 
 layout(location = 0) in vec4 position;
 
@@ -8,47 +8,42 @@ void main() {
 }
 
 #shader fragment ------------------------------------------------------------------------------------------
-#version 330 core
+#version 440 core
 
 out vec4 color;
 
-#define ZOOM    1.4
-
-vec3 fractal(vec2 p) {    
-    vec2 z = vec2(0);  
+dvec3 calculate_mandelbrot(dvec2 p) {    
+    dvec2 z = dvec2(0);  
 
     for (int i = 0; i < 128; ++i) {  
-        z = vec2(z.x * z.x - z.y * z.y, 2. * z.x * z.y) + p; 
+        z = dvec2(z.x * z.x - z.y * z.y, 2. * z.x * z.y) + p; 
 
 
-        if (dot(z, z) > 4.0f) {
-            vec3 color = vec3(sin(0.5 * i), sin(i + 5), cos(i * 0.4)) + vec3(0.4f);
-
-
-            return color;
-        }
-        // if (dot(z,z) > 4.)
-        //     return vec3(i, 1, 1) * 0.1;
+        if (dot(z, z) > 4.0)
+            return dvec3(sin(0.5 * i), sin(i + 5), cos(i * 0.4)) + dvec3(0.4);
     }
 
-    return vec3(0);
+    return dvec3(0);
 }
 
-uniform vec2 resolution;
+uniform double zoom;
+uniform dvec2 position;
 
-#define AA 3
+#define antialiasing_level 2
 
 void main() {
-    vec2 c = (gl_FragCoord.xy / resolution.xy * 2. - 1.) * vec2(resolution.x / resolution.y, 1) * ZOOM - vec2(.5,0.);
+    dvec2 resolution = dvec2(1920, 1080);
+    dvec2 mandelbrot_position = (gl_FragCoord.xy / resolution.xy * 2. - 1.) *
+        dvec2(resolution.x / resolution.y, 1) * zoom + position;
 
-    vec3 col = vec3(0);
+    dvec3 output_color = vec3(0);
 
-    float e = 1. / min(resolution.y , resolution.x);    
-    for (float i = -AA; i < AA; ++i) {
-        for (float j = -AA; j < AA; ++j) {
-    		col += fractal(c + ZOOM * vec2(i, j) * (e/AA)) / (4.*AA*AA);
-        }
-    }
+    double e = 1.0 / min(resolution.y , resolution.x);    
+    for (double i = -antialiasing_level; i < antialiasing_level; ++i)
+        for (double j = -antialiasing_level; j < antialiasing_level; ++j)
+    		output_color += calculate_mandelbrot(mandelbrot_position + zoom * dvec2(i, j) *
+                                                 (e / antialiasing_level))
+                / (4.0 * antialiasing_level * antialiasing_level);
 
-    color = vec4(col, 1);
+    color = vec4(output_color.xyz, 1);
 }
