@@ -7,6 +7,11 @@
 #include "mandelbrot-renderer.h"
 
 #include <cmath>
+#include <iostream>
+
+std::string mandelbrot_cpu_unoptimized_renderer::get_backend_name() {
+    return "MANDELBROT CPU UNOPTIMIZED RENDERER";
+}
 
 static math::vec<double, 3> calculate_mandelbrot_point(const math::vec<double, 2> point) {
     math::vec z(0.0, 0.0);
@@ -31,6 +36,8 @@ void mandelbrot_cpu_unoptimized_renderer::draw_mandelbrot(const math::vec<double
 
             // Current point's coordinates:
             current.point = math::vec(j * 2.0 / get_width() - 1.0, i * 2.0 / get_height() - 1.0);
+
+            // std::cout << "un: num: " << (i * get_width() + j) << ", actual: " << current.point << "\n";
 
             math::vec<double, 2> mandelbrot_point =
                 current.point * math::vec(get_width() / (double) get_height(), 1.0) * zoom + position;

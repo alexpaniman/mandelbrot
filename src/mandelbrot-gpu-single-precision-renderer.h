@@ -5,7 +5,7 @@
 #include "colored-vertex.h"
 #include "renderer.h"
 
-class mandelbrot_gpu_renderer: public mandelbrot_renderer {
+class mandelbrot_gpu_single_precision_renderer: public mandelbrot_renderer {
 private:
     gl::vertex_vector_array<math::vec<double, 2>> points;
     gl::shaders::shader_program mandelbrot_shader;
@@ -18,5 +18,5 @@ public:
 
     std::string get_backend_name() override;
 
-    virtual ~mandelbrot_gpu_renderer() = default;
+    virtual ~mandelbrot_gpu_single_precision_renderer() = default;
 };

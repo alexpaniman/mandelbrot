@@ -5,7 +5,7 @@
 #include "colored-vertex.h"
 #include "renderer.h"
 
-class mandelbrot_cpu_unoptimized_renderer: public mandelbrot_renderer {
+class mandelbrot_cpu_vectorized_renderer: public mandelbrot_renderer {
 private:
     gl::vertex_vector_array<colored_vertex> points;
     gl::shaders::shader_program colored_renderer;
@@ -20,5 +20,5 @@ public:
 
     std::string get_backend_name() override;
 
-    virtual ~mandelbrot_cpu_unoptimized_renderer() = default;
+    virtual ~mandelbrot_cpu_vectorized_renderer() = default;
 };

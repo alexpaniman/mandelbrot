@@ -28,7 +28,7 @@ namespace gl {
 
         bind();
         gl::raw::buffer_data(GL_ARRAY_BUFFER, (int) data.size,
-                             data.data, GL_STATIC_DRAW);
+                             data.data, GL_DYNAMIC_DRAW);
     }
 
     size_t vertex_buffer::size() const {

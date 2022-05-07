@@ -12,8 +12,8 @@ namespace gl {
     public:
         using gl::window::window;
 
-        void setup() override final;
-        void draw()  override final;
+        void setup() override;
+        void draw()  override;
 
         virtual void window_setup() {}
 

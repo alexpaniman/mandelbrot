@@ -2,6 +2,9 @@
 #include "math.h"
 #include "opengl-setup.h"
 
+std::string mandelbrot_gpu_renderer::get_backend_name() {
+    return "MANDELBROT GPU RENDERER";
+}
 
 void mandelbrot_gpu_renderer::setup() {
     points.set_layout(math::vector_layout<double, 2>());

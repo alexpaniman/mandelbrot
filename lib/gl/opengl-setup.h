@@ -194,8 +194,8 @@ namespace gl {
 
     class window {
     private:
-        GLFWwindow* glfw_window;
         int current_fps;
+        GLFWwindow* glfw_window;
 
     protected:
         const int width, height;
@@ -210,6 +210,8 @@ namespace gl {
         void bind() const;
 
         int get_fps() const noexcept;
+        GLFWwindow* get_glfw_window() const noexcept;
+
         void draw_loop();
 
         virtual void setup() {};
@@ -222,27 +224,6 @@ namespace gl {
         };
 
         virtual ~window();
-    };
-
-
-    class points_buffer final {
-    private:
-        std::vector<math::vec<double, 2>> points;
-
-    public:
-        const unsigned int id;
-
-        points_buffer();
-
-        void resize(size_t buffer_size);
-        void assign(std::initializer_list<math::vec<double, 2>> points);
-
-        size_t size() const noexcept;
-
-        void bind();
-        void upload_data();
-
-        math::vec<double, 2>& operator[](size_t index);
     };
 
     enum class drawing_type {

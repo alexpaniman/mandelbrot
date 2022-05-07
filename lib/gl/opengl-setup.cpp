@@ -224,6 +224,10 @@ namespace gl {
         return current_fps;
     }
 
+    GLFWwindow* window::get_glfw_window() const noexcept {
+        return this->glfw_window;
+    }
+
     static void key_press_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS || action == GLFW_REPEAT)
             window_mapping[window]->on_key_pressed((gl::key) key);
@@ -259,46 +263,6 @@ namespace gl {
 
     window::~window() {
         glfwTerminate();
-    }
-
-    // --------------------------------- POINTS BUFFER ---------------------------------
-
-    static unsigned int generate_buffer() {
-        unsigned int generated_buffer_id = 0;
-        gl::raw::gen_buffers(1 /* single buffer */, &generated_buffer_id);
-
-        return generated_buffer_id;
-    }
-
-    points_buffer::points_buffer(): id(generate_buffer()) {}
-
-    void points_buffer::bind() {
-        gl::raw::bind_buffer(GL_ARRAY_BUFFER, id);
-    }
-
-    void points_buffer::assign(const std::initializer_list<math::vec<double, 2>> points_initializer) {
-        this->points.assign(points_initializer);
-        upload_data();
-    }
-
-    void points_buffer::upload_data() {
-        bind();
-        gl::raw::buffer_data(GL_ARRAY_BUFFER, (int) points.size() * 2 * (int) sizeof(double),
-                             &(*points.begin()), GL_STATIC_DRAW);
-
-        const unsigned int vec2_attrib_index = 0;
-
-        glEnableVertexAttribArray(vec2_attrib_index);
-        glVertexAttribPointer(vec2_attrib_index, 2, GL_DOUBLE,
-                              GL_FALSE, sizeof(double) * 2, 0);
-    }
-
-    size_t points_buffer::size() const noexcept {
-        return points.size();
-    }
-
-    math::vec<double, 2>& points_buffer::operator[](const size_t index) {
-        return points[index];
     }
 
     // ------------------------------------ DRAWING ------------------------------------
