@@ -1,37 +1,25 @@
-#include "colored-vertex.h"
-#include "imgui_impl_opengl3.h"
+#include "gl-imgui.h"
+
+// All available mandelbrot renderers
 #include "mandelbrot-cpu-optimized-renderer.h"
 #include "mandelbrot-cpu-unoptimized-renderer.h"
 #include "mandelbrot-cpu-vectorized-renderer.h"
 #include "mandelbrot-gpu-renderer.h"
 #include "mandelbrot-gpu-single-precision-renderer.h"
-#include "mandelbrot-renderer.h"
-#include "opengl-setup.h"
-#include "opengl-wrapper.h"
-#include "math.h"
-#include "renderer-handler-window.h"
-#include "vertex-array.h"
-#include "vertex-buffer.h"
-#include "vertex-layout.h"
-#include "vertex-vector-array.h"
+#include "renderer.h"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <cstddef>
-#include <iostream>
-#include <vector>
 #include <memory>
-#include <cmath>
+#include <vector>
 
 class mandelbrot_window: public gl::renderer_handler_window {
 private:
+    // List of mandelbrot renderer's that can be switched easily
     std::vector<std::unique_ptr<mandelbrot_renderer>> backends;
-    size_t current_backend;
+    size_t current_backend_index;
 
+    gl::imgui::imgui_renderer ui_renderer;
+
+    // Zoom and position together determine location in mandelbrot:
     double zoom = 1.4;
     math::vec<double, 2> position { -0.5, 0.0 };
 
@@ -43,11 +31,11 @@ public:
 
         switch (pressed_key) {
             case key::SPACE:
-                ++ current_backend;
-                if (current_backend >= backends.size())
-                    current_backend = 0;
+                ++ current_backend_index;
+                if (current_backend_index >= backends.size())
+                    current_backend_index = 0;
 
-                set_renderer(&*backends[current_backend]);
+                ui_renderer.set_main_renderer(&*backends[current_backend_index]);
                 break;
 
             // ---------------------------- ZOOM ----------------------------
@@ -78,10 +66,6 @@ public:
         }
     }
 
-    void on_fps_updated() override {
-        std::cout << "FPS: " << get_fps() << std::endl;
-    }
-
 private:
     template <typename mandelbrot_backend>
     void add_backend() {
@@ -89,52 +73,37 @@ private:
     }
 
 public:
-    void draw() override {
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+    void draw_ui() {
+        ImGui::Begin("Name of backend");
 
-        ImGui::ShowDemoWindow();
-        // ImGui::Begin("Name of backend");
-        // ImGui::Text("%s", backends[current_backend]->get_backend_name().c_str());
-        // ImGui::TextColored(ImVec4(1.0, 1.0, 0, 1), "FPS: %d", get_fps());
-        // ImGui::End();
+        ImGui::Text("%s", backends[current_backend_index]->get_backend_name().c_str());
+        ImGui::TextColored(ImVec4(1.0, 1.0, 0, 1), "FPS: %d", get_fps());
 
-        // this->gl::renderer_handler_window::draw();
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        ImGui::End();
     }
 
     void window_setup() override {
-        glfwSwapInterval(1); 
-
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGui::StyleColorsDark();
-        ImGui_ImplGlfw_InitForOpenGL(get_glfw_window(), true);
-
-        ImGui_ImplOpenGL3_Init("#version 440");
-
         add_backend<mandelbrot_gpu_renderer>();
         add_backend<mandelbrot_gpu_single_precision_renderer>();
+
         add_backend<mandelbrot_cpu_vectorized_renderer>();
         add_backend<mandelbrot_cpu_unoptimized_renderer>();
+
         add_backend<mandelbrot_cpu_optimized_renderer>();
+        
+        // Set UI drawing renderer from function
+        ui_renderer.set_ui_renderer(std::bind(&mandelbrot_window::draw_ui, this));
 
-        current_backend = 0;
-        set_renderer(&*backends.front()); // Initialize with first backend
-    }
+        // ImGUI renderer will internally handle our renderer
+        set_renderer(&ui_renderer);
 
-    virtual ~mandelbrot_window() {
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
+        // First backend in the list, is first one to run
+        current_backend_index = 0;
+        ui_renderer.set_main_renderer(&*backends[current_backend_index]);
     }
 };
 
 int main(void) {
-    mandelbrot_window window(1920, 1080, "Mandelbrot Illustrator");
+    mandelbrot_window window(1920, 1080, "Mandelbrot Set");
     window.draw_loop();
 }

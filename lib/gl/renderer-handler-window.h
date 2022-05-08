@@ -8,6 +8,7 @@ namespace gl {
     class renderer_handler_window: public gl::window {
     private:
         renderer* current_renderer = nullptr;
+        void setup_current_renderer();
 
     public:
         using gl::window::window;
@@ -15,7 +16,9 @@ namespace gl {
         void setup() override;
         void draw()  override;
 
+        // Additional option for window to add something
         virtual void window_setup() {}
+        virtual void window_draw()  {}
 
         void set_renderer(renderer* new_renderer);
 
