@@ -18,7 +18,7 @@ public:
     void setup() override;
     void draw()  override;
 
-    std::string get_backend_name() override;
+    const char* get_backend_name() override;
 
     virtual ~mandelbrot_cpu_vectorized_renderer() = default;
 };

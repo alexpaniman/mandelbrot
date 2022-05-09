@@ -15,7 +15,7 @@ out vec4 color;
 vec3 calculate_mandelbrot(vec2 p) {    
     vec2 z = vec2(0);  
 
-    for (int i = 0; i < 128; ++i) {  
+    for (int i = 0; i < 128; ++ i) {  
         z = vec2(z.x * z.x - z.y * z.y, 2. * z.x * z.y) + p; 
 
 
@@ -26,24 +26,29 @@ vec3 calculate_mandelbrot(vec2 p) {
     return vec3(0);
 }
 
+uniform vec2 resolution;
+
 uniform float zoom;
 uniform vec2 position;
 
-#define antialiasing_level 2
+uniform float antialiasing_level;
 
 void main() {
-    vec2 resolution = vec2(1920, 1080);
     vec2 mandelbrot_position = (gl_FragCoord.xy / resolution.xy * 2. - 1.) *
         vec2(resolution.x / resolution.y, 1) * zoom + position;
 
     vec3 output_color = vec3(0);
 
-    float e = 1.0 / min(resolution.y , resolution.x);    
-    for (double i = -antialiasing_level; i < antialiasing_level; ++i)
-        for (double j = -antialiasing_level; j < antialiasing_level; ++j)
-    		output_color += calculate_mandelbrot(mandelbrot_position + zoom * vec2(i, j) *
-                                                 (e / antialiasing_level))
-                / (4.0 * antialiasing_level * antialiasing_level);
+    if (antialiasing_level == 0.0)
+        output_color = calculate_mandelbrot(mandelbrot_position);
+    else {
+        float e = 1.0 / min(resolution.y , resolution.x);    
+        for (float i = -antialiasing_level; i < antialiasing_level; ++ i)
+            for (float j = -antialiasing_level; j < antialiasing_level; ++ j)
+                output_color += calculate_mandelbrot(mandelbrot_position + zoom * vec2(i, j) *
+                                                    (e / antialiasing_level))
+                    / (4.0 * antialiasing_level * antialiasing_level);
+    }
 
     color = vec4(output_color.xyz, 1);
 }

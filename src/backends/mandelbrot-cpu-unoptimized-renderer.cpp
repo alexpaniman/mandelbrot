@@ -9,7 +9,7 @@
 #include <cmath>
 #include <iostream>
 
-std::string mandelbrot_cpu_unoptimized_renderer::get_backend_name() {
+const char* mandelbrot_cpu_unoptimized_renderer::get_backend_name() {
     return "MANDELBROT CPU UNOPTIMIZED RENDERER";
 }
 
@@ -18,7 +18,7 @@ static math::vec<double, 3> calculate_mandelbrot_point(const math::vec<double, 2
 
     for (int i = 0; i < 128; ++ i) {  
         z = math::vec(math::pow(z.x(), 2) - math::pow(z.y(), 2),
-                        2.0 * z.x() * z.y()) + point;
+                      2.0 * z.x() * z.y()) + point;
 
         if (z.len() > 4.0)
             return math::vec((double) sin(0.5 * i) + 0.4,

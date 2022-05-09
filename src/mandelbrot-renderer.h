@@ -12,7 +12,8 @@ public:
     mandelbrot_renderer(double& new_zoom, math::vec<double, 2>& new_position)
         : zoom(new_zoom), position(new_position) {}
 
-    virtual std::string get_backend_name() = 0;
+    virtual const char* get_backend_name() = 0;
+    virtual void additional_ui() {}
 
     virtual ~mandelbrot_renderer() = default;
 };

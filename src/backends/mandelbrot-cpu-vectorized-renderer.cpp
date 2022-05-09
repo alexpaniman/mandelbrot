@@ -12,7 +12,7 @@
 
 constexpr int batch_size = 4;
 
-std::string mandelbrot_cpu_vectorized_renderer::get_backend_name() {
+const char* mandelbrot_cpu_vectorized_renderer::get_backend_name() {
     return "MANDELBROT CPU VECTORIZED RENDERER";
 }
 
