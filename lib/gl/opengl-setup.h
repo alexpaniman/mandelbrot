@@ -198,7 +198,7 @@ namespace gl {
         GLFWwindow* glfw_window;
 
     protected:
-        const int width, height;
+        int width, height;
 
     public:
         window(int width, int height, const char* title);

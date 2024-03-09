@@ -195,7 +195,15 @@ namespace gl {
         if (!glfwInit())
             throw std::runtime_error("Failed to initialize glfw!");
 
-        glfw_window = glfwCreateWindow(width, height, title, NULL, NULL);
+        // width or height == 0 is treated as a request to guess fullscreen size
+        if (width == 0 || height == 0) {
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+            this->width = mode->width, this->height = mode->height;
+        }
+
+        glfw_window = glfwCreateWindow(this->width, this->height, title, NULL, NULL);
 
         if (glfw_window == NULL) {
             glfwTerminate();

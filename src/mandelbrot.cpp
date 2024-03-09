@@ -136,7 +136,7 @@ void print_help(const char* executable_name) {
 }
 
 int main(int argc, char* argv[]) {
-    int width = 1920, height = 1080;
+    int width = 0, height = 0;
 
     const char* executable_name = argv[0];
     if (argc == 3) {
