@@ -1,6 +1,7 @@
 #include "mandelbrot-gpu-renderer.h"
 #include "gl-imgui.h"
 #include "imgui.h"
+#include "mandelbrot-shader-loader.h"
 #include <iostream>
 
 void mandelbrot_gpu_renderer::additional_ui() {
@@ -23,7 +24,7 @@ void mandelbrot_gpu_renderer::setup() {
             {  1.0,  1.0 },
     });
 
-    mandelbrot_shader.from_file("res/mandelbrot.glsl");
+    load_mandelbrot_shader(mandelbrot_shader, "mandelbrot");
 }
 
 void mandelbrot_gpu_renderer::draw() {

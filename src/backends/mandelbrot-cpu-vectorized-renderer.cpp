@@ -135,7 +135,7 @@ void mandelbrot_cpu_vectorized_renderer::setup() {
     // Fill with point for each pixel:
     points.resize(get_width() * get_height());
 
-    colored_renderer.from_file("res/gradient.glsl");
+    load_mandelbrot_shader(colored_renderer, "gradient");
 }
 
 void mandelbrot_cpu_vectorized_renderer::draw() {

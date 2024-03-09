@@ -16,13 +16,18 @@
       name = "mandelbrot";
       src = ./.;
 
-      nativeBuildInputs = with pkgs; [ cmake clang ninja m4 glew glfw3 ];
+      nativeBuildInputs = with pkgs; [ makeWrapper cmake clang ninja m4 glew glfw3 ];
 
       cmakeFlags = [
         "-DCMAKE_CXX_COMPILER=${pkgs.clang}/bin/clang++"
         "-DCMAKE_C_COMPILER=${pkgs.clang}/bin/clang"
         "-DCMAKE_BUILD_TYPE=Release"
       ];
+
+      postFixup = ''
+        cp -r $src/res $out
+        wrapProgram $out/bin/mandelbrot --set MANDELBROT_SHADER_HOME $out/res
+      '';
     };
 
   };

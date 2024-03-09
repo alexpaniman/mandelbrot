@@ -21,7 +21,7 @@ void mandelbrot_gpu_single_precision_renderer::setup() {
             {  1.0,  1.0 },
     });
 
-    mandelbrot_shader.from_file("res/mandelbrot-single-precision.glsl");
+    load_mandelbrot_shader(mandelbrot_shader, "mandelbrot-single-precision");
 }
 
 void mandelbrot_gpu_single_precision_renderer::draw() {

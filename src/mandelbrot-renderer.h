@@ -1,5 +1,7 @@
 #pragma once
 
+#include "mandelbrot-shader-loader.h"
+
 #include "math.h"
 #include "renderer.h"
 
