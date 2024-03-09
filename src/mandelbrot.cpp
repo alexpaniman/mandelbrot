@@ -146,8 +146,8 @@ int main(int argc, char* argv[]) {
         const char *width_string = argv[1],
             *height_string = argv[2];
 
-        height = std::atoi(width_string);
-        width  = std::atoi(height_string);
+        height = std::atoi(height_string);
+        width  = std::atoi(width_string);
     } else if (argc != 1) {
         print_help(executable_name);
         return EXIT_FAILURE;
