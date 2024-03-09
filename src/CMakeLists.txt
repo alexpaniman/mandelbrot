@@ -14,3 +14,5 @@ set_target_properties(mandelbrot PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR})
 
 target_link_libraries(mandelbrot gl-imgui)
+
+install(TARGETS mandelbrot DESTINATION bin)
