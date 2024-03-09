@@ -52,6 +52,9 @@ namespace gl::imgui {
         ImGui_ImplGlfw_InitForOpenGL(this->get_glfw_window(), true);
         ImGui_ImplOpenGL3_Init(opengl_version.c_str());
 
+        // Disable by-default saving layout in imgui.ini 
+        ImGui::GetIO().IniFilename = NULL;
+
         // Setup renderers
         setup_current_renderer(ui_renderer);
         setup_current_renderer(main_renderer);
