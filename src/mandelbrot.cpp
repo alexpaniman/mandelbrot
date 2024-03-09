@@ -80,7 +80,8 @@ private:
 
 public:
     void draw_ui() {
-        ImGui::Begin("Backend");
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(475, 74));
+        ImGui::Begin("Backend", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
 
         const char* current_name = backends[current_backend_index]->get_backend_name();
 
