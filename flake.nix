@@ -12,17 +12,24 @@
     in
   {
 
-    packages.${system}.default = pkgs.stdenv.mkDerivation {
+    packages.${system}.default = pkgs.clangStdenv.mkDerivation {
       name = "mandelbrot";
       src = ./.;
 
-      nativeBuildInputs = with pkgs; [ makeWrapper cmake clang ninja m4 glew glfw3 ];
+      nativeBuildInputs = with pkgs; [
+        clang-tools
 
-      cmakeFlags = [
-        "-DCMAKE_CXX_COMPILER=${pkgs.clang}/bin/clang++"
-        "-DCMAKE_C_COMPILER=${pkgs.clang}/bin/clang"
-        "-DCMAKE_BUILD_TYPE=Release"
+        cmake
+        ninja
+
+        m4
+        makeWrapper
+
+        glew
+        glfw3
       ];
+
+      cmakeFlags = [ "-DCMAKE_BUILD_TYPE=Release" ];
 
       postFixup = ''
         cp -r $src/res $out
