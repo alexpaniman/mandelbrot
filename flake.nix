@@ -3,15 +3,13 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    nixgl.url = "github:nix-community/nixGL";
   };
 
-  outputs = { self, nixpkgs, nixgl }:
+  outputs = { self, nixpkgs }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
-        system = system;
-        overlays = [ nixgl.overlay ];
+        inherit system;
       };
     in
   {
@@ -32,6 +30,8 @@
         glew
         glfw3
       ];
+
+      buildInputs = with pkgs; [ glfw3 ];
 
       cmakeFlags = [ "-DCMAKE_BUILD_TYPE=Release" ];
 
