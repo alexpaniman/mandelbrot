@@ -1,6 +1,11 @@
 #include "opengl-error-handler.h"
 
-#include "GL/glew.h"
+#ifdef __APPLE__
+    #define GL_SILENCE_DEPRECATION
+    #include <OpenGL/gl3.h>
+#else
+    #include <GL/glew.h>
+#endif
 #include <sstream>
 #include <stdexcept>
 
@@ -29,11 +34,14 @@ namespace gl::error {
           "execute the command. The state of the GL is undefined, except for "
           "the state of the error flags, after this error is recorded. " },
 
+#ifdef GL_STACK_UNDERFLOW
         { error_code::stack_underflow, "An attempt has been made to perform "
           "an operation that would cause an internal stack to underflow. " },
-
+#endif
+#ifdef GL_STACK_OVERFLOW
         { error_code::stack_overflow, "An attempt has been made to perform "
           "an operation that would cause an internal stack to overflow. " },
+#endif
     };
 
     std::string describe_error(error_code code) {

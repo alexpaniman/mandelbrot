@@ -1,5 +1,10 @@
 #include "vertex-layout.h"
-#include "GL/glew.h"
+#ifdef __APPLE__
+    #define GL_SILENCE_DEPRECATION
+    #include <OpenGL/gl3.h>
+#else
+    #include <GL/glew.h>
+#endif
 
 namespace gl {
 

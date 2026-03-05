@@ -1,7 +1,7 @@
 #include "mandelbrot-cpu-optimized-renderer.h"
 #include "renderer.h"
 #include "opengl-setup.h"
-#include "math.h"
+#include "vecmath.h"
 #include "colored-vertex.h"
 #include "mandelbrot-gpu-renderer.h"
 #include "mandelbrot-renderer.h"

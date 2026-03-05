@@ -24,14 +24,15 @@ add_dependencies(gl run-m4-opengl-wrapper-generator)
 
 # Link OpenGL, GLEW and GLFW with gl
 
-set(OpenGL_GL_PREFERENCE GLVND)
-
-find_package(GLEW   REQUIRED)
 find_package(glfw3  REQUIRED)
 find_package(OpenGL REQUIRED)
 
-target_include_directories(
-    gl PUBLIC
-    ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
-
-target_link_libraries(gl PUBLIC ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} glfw)
+if(APPLE)
+    target_include_directories(gl PUBLIC ${OPENGL_INCLUDE_DIRS})
+    target_link_libraries(gl PUBLIC ${OPENGL_LIBRARIES} glfw)
+else()
+    set(OpenGL_GL_PREFERENCE GLVND)
+    find_package(GLEW REQUIRED)
+    target_include_directories(gl PUBLIC ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
+    target_link_libraries(gl PUBLIC ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} glfw)
+endif()

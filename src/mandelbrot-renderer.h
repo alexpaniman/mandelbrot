@@ -2,7 +2,7 @@
 
 #include "mandelbrot-shader-loader.h"
 
-#include "math.h"
+#include "vecmath.h"
 #include "renderer.h"
 
 class mandelbrot_renderer: public gl::renderer { // Class that encapsulates position in mandelbrot set

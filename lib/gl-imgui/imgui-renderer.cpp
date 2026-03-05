@@ -35,11 +35,8 @@ namespace gl::imgui {
     }
 
     // OpenGL version to use with Dear ImGUI
-
-    // This wrapper isn't designed to be portable,
-    // and besides version 440 is pretty available
-    // on PC's. So I'm just hardcoding it:
-    static const std::string opengl_version = "#version 440"; 
+    // macOS supports OpenGL 4.1 at most; 4.1 works on all platforms
+    static const std::string opengl_version = "#version 410";
 
     void imgui_renderer::setup() {
         IMGUI_CHECKVERSION();

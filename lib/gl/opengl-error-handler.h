@@ -1,6 +1,11 @@
 #pragma once
 
-#include "GL/glew.h"
+#ifdef __APPLE__
+    #define GL_SILENCE_DEPRECATION
+    #include <OpenGL/gl3.h>
+#else
+    #include <GL/glew.h>
+#endif
 
 #include <string>
 #include <map>
@@ -16,8 +21,12 @@ namespace gl::error {
         invalid_framebuffer_operation = GL_INVALID_FRAMEBUFFER_OPERATION,
 
         out_of_memory                 = GL_OUT_OF_MEMORY                ,
+#ifdef GL_STACK_UNDERFLOW
         stack_underflow               = GL_STACK_UNDERFLOW              ,
+#endif
+#ifdef GL_STACK_OVERFLOW
         stack_overflow                = GL_STACK_OVERFLOW               ,
+#endif
     };
 
     std::string describe_error(error_code code);

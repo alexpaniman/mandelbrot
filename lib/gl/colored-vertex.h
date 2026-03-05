@@ -1,6 +1,6 @@
 #pragma once
 
-#include "math.h"
+#include "vecmath.h"
 
 struct colored_vertex final {
     math::vec<double, 2> point;

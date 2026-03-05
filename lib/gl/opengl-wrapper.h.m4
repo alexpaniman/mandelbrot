@@ -19,7 +19,12 @@ divert(0)dnl
 #include "opengl-error-handler.h"
 
 #include <iostream>
-#include <GL/glew.h>
+#ifdef __APPLE__
+    #define GL_SILENCE_DEPRECATION
+    #include <OpenGL/gl3.h>
+#else
+    #include <GL/glew.h>
+#endif
 
 namespace gl::raw {
 include(stdlib.m4)dnl
@@ -30,18 +35,15 @@ GLuint glCreateProgram(),
 GLint glGetUniformLocation(GLuint program, const GLchar *name),
 GLuint glCreateShader(GLenum shaderType),
 void glAttachShader(GLuint program, GLuint shader),
-void glBegin(GLenum mode),
 void glBindBuffer(GLenum target, GLuint buffer),
 void glBindVertexArray(GLuint array),
 void glBufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage),
 void glClear(GLbitfield mask),
-void glColor3f(GLfloat red, GLfloat green, GLfloat blue),
 void glCompileShader(GLuint shader),
 void glDeleteBuffers(GLsizei n, const GLuint *buffers),
 void glDeleteProgram(GLuint program),
 void glDrawArrays(GLenum mode, GLint first, GLsizei count),
 void glEnableVertexAttribArray(GLuint index),
-void glEnd(),
 void glGenBuffers(GLsizei n, GLuint *buffers),
 void glGenVertexArrays(GLsizei n, GLuint *arrays),
 void glGetShaderInfoLog(GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog),
@@ -91,7 +93,6 @@ void glUniformMatrix4x2fv(GLint location, GLsizei count, GLboolean transpose, co
 void glUniformMatrix4x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value),
 void glUseProgram(GLuint program),
 void glValidateProgram(GLuint program),
-void glVertex2f(GLfloat x, GLfloat y),
 void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer))')
 
 divert(0)dnl

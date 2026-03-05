@@ -9,7 +9,7 @@
 // Also this can be used for header precompilation (PCH)
 
 // Simple vector library with few simple helpers
-#include "math.h"
+#include "vecmath.h"
 
 // Necessary GLFW boilerplate boiled down to minimum
 #include "opengl-setup.h"

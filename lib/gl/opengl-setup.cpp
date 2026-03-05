@@ -1,5 +1,5 @@
 #include "opengl-setup.h"
-#include "math.h"
+#include "vecmath.h"
 #include "uniforms.h"
 #include "vertex-array.h"
 
@@ -195,6 +195,13 @@ namespace gl {
         if (!glfwInit())
             throw std::runtime_error("Failed to initialize glfw!");
 
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
         // width or height == 0 is treated as a request to guess fullscreen size
         if (width == 0 || height == 0) {
             GLFWmonitor* monitor = glfwGetPrimaryMonitor();
@@ -219,8 +226,18 @@ namespace gl {
 
         bind();
 
+#ifndef __APPLE__
         if (glewInit() != GLEW_OK)
             throw std::runtime_error("Failed to initialize glew!");
+#endif
+
+        // On HiDPI/Retina displays the framebuffer size in physical pixels differs
+        // from the window size in logical points. gl_FragCoord uses physical pixels,
+        // so use the framebuffer dimensions everywhere to keep the math consistent.
+        int fb_width, fb_height;
+        glfwGetFramebufferSize(glfw_window, &fb_width, &fb_height);
+        this->width = fb_width;
+        this->height = fb_height;
     }
     
     void window::bind() const {

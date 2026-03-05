@@ -1,7 +1,9 @@
 #include "gl-imgui.h"
 
 // All available mandelbrot renderers
-#include "mandelbrot-cpu-optimized-renderer.h"
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__)
+    #include "mandelbrot-cpu-optimized-renderer.h"
+#endif
 #include "mandelbrot-cpu-unoptimized-renderer.h"
 #include "mandelbrot-cpu-vectorized-renderer.h"
 #include "mandelbrot-gpu-renderer.h"
@@ -115,8 +117,10 @@ public:
         add_backend<mandelbrot_cpu_vectorized_renderer>();
         add_backend<mandelbrot_cpu_unoptimized_renderer>();
 
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__)
         add_backend<mandelbrot_cpu_optimized_renderer>();
-        
+#endif
+
         // Set UI drawing renderer from function
         ui_renderer.set_ui_renderer(std::bind(&mandelbrot_window::draw_ui, this));
 
