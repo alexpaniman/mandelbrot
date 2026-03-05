@@ -6,6 +6,7 @@
 #endif
 #include "mandelbrot-cpu-unoptimized-renderer.h"
 #include "mandelbrot-cpu-vectorized-renderer.h"
+#include "mandelbrot-cpu-arbitrary-renderer.h"
 #include "mandelbrot-gpu-renderer.h"
 #include "mandelbrot-gpu-single-precision-renderer.h"
 
@@ -116,6 +117,7 @@ public:
 
         add_backend<mandelbrot_cpu_vectorized_renderer>();
         add_backend<mandelbrot_cpu_unoptimized_renderer>();
+        add_backend<mandelbrot_cpu_arbitrary_renderer>();
 
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__)
         add_backend<mandelbrot_cpu_optimized_renderer>();

@@ -26,9 +26,10 @@
           m4
           makeWrapper
           glfw
+          mpfr
         ] ++ pkgs.lib.optionals (!pkgs.stdenv.isDarwin) [ glew ];
 
-        buildInputs = with pkgs; [ glfw ]
+        buildInputs = with pkgs; [ glfw mpfr ]
           ++ pkgs.lib.optionals (!pkgs.stdenv.isDarwin) [ glew ]
           ++ pkgs.lib.optionals pkgs.stdenv.isDarwin (with pkgs.darwin.apple_sdk.frameworks; [
             OpenGL Cocoa IOKit CoreFoundation
