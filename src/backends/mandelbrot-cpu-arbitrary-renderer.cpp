@@ -155,12 +155,9 @@ void mandelbrot_cpu_arbitrary_renderer::worker_body() {
             }
         }
 
-        // Signal that this thread finished its share of work.
-        {
-            std::lock_guard<std::mutex> lock(m_mutex);
-            ++m_threads_done;
-            m_cv.notify_all();
-        }
+        // Signal completion. Release ordering ensures all pixel writes above
+        // are visible to the main thread when it loads m_threads_done.
+        m_threads_done.fetch_add(1, std::memory_order_release);
     }
 
     if (coords_init) {
@@ -168,35 +165,26 @@ void mandelbrot_cpu_arbitrary_renderer::worker_body() {
     }
 }
 
-void mandelbrot_cpu_arbitrary_renderer::draw_mandelbrot(math::vec<double, 2> position, double zoom) {
-    const int num_threads = (int)m_threads.size();
-
-    // Write frame parameters before acquiring the mutex so workers see them
-    // after they wake (the mutex provides the happens-before edge).
+void mandelbrot_cpu_arbitrary_renderer::start_frame(math::vec<double, 2> position, double zoom) {
+    // Write frame parameters before the mutex so workers see them after waking
+    // (the mutex acquire in wait() provides the happens-before edge).
     m_frame_prec   = compute_precision(zoom, get_width());
     m_frame_width  = (int)get_width();
     m_frame_height = (int)get_height();
     m_frame_zoom   = zoom;
     m_frame_pos_x  = position.x();
     m_frame_pos_y  = position.y();
-    m_next_row.store(0);
     current_precision = m_frame_prec;
 
-    // Wake all workers by advancing the phase.
+    m_next_row.store(0, std::memory_order_relaxed);
+    m_threads_done.store(0, std::memory_order_relaxed);
+
     {
         std::lock_guard<std::mutex> lock(m_mutex);
-        m_threads_done = 0;
+        m_computing = true;
         ++m_phase;
         m_cv.notify_all();
     }
-
-    // Wait until every worker has finished this frame.
-    {
-        std::unique_lock<std::mutex> lock(m_mutex);
-        m_cv.wait(lock, [&]{ return m_threads_done == num_threads; });
-    }
-
-    points.update();
 }
 
 void mandelbrot_cpu_arbitrary_renderer::setup() {
@@ -213,8 +201,19 @@ void mandelbrot_cpu_arbitrary_renderer::setup() {
 }
 
 void mandelbrot_cpu_arbitrary_renderer::draw() {
-    draw_mandelbrot(position, zoom);
+    // Non-blocking check: did the background computation finish?
+    if (m_computing &&
+        m_threads_done.load(std::memory_order_acquire) == (int)m_threads.size()) {
+        m_computing = false;
+        points.update();  // safe: all workers are done, no one writes to points
+    }
+
+    // Always draw whatever is currently in the GPU buffer (last complete frame).
     gl::draw(gl::drawing_type::POINTS, points, colored_renderer);
+
+    // Kick off the next frame unless one is already in flight.
+    if (!m_computing)
+        start_frame(position, zoom);
 }
 
 void mandelbrot_cpu_arbitrary_renderer::additional_ui() {

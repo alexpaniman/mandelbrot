@@ -23,9 +23,14 @@ private:
     std::vector<std::thread> m_threads;
     std::mutex m_mutex;
     std::condition_variable m_cv;
-    int m_phase = 0;           // incremented each frame to wake workers
-    int m_threads_done = 0;    // how many workers finished this frame
-    bool m_stop = false;
+    int  m_phase = 0;           // incremented each frame to wake workers
+    bool m_stop  = false;
+    bool m_computing = false;   // true while workers are active (main thread only)
+
+    // Counts workers that finished the current frame.
+    // fetch_add(release) in workers / load(acquire) in main establishes
+    // happens-before so all pixel writes are visible before update().
+    std::atomic<int> m_threads_done{0};
 
     // Per-frame parameters written by main thread before notify,
     // read by workers after waking (ordering guaranteed by the mutex).
@@ -38,7 +43,7 @@ private:
     double m_frame_pos_y  = 0.0;
 
     void worker_body();
-    void draw_mandelbrot(math::vec<double, 2> position, double zoom);
+    void start_frame(math::vec<double, 2> position, double zoom);
 
 public:
     using mandelbrot_renderer::mandelbrot_renderer;
